@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model InsiderTrade {
+  id           String   @id @default(cuid())
+  ticker       String
+  companyName  String
+  personName   String
+  personRole   String   // Director, CEO, CFO, Major Shareholder (>5%)
+  tradeType    String   // "buy" | "sell" | "acquisition" | "disposal"
+  shares       BigInt
+  pricePerShare Float
+  totalValue   Float
+  tradeDate    DateTime
+  noticeDate   DateTime // Date filed with ASX
+  noticeType   String   // "3Y" (director) | "3X" (substantial holder)
+  noticeUrl    String?
+  createdAt    DateTime @default(now())
+
+  @@index([ticker])
+  @@index([tradeDate])
+  @@index([personRole])
+}
+
+model AlertSubscription {
+  id        String   @id @default(cuid())
+  ticker    String
+  email     String?
+  minValue  Float    @default(100000)  // Minimum trade value to alert on (AUD)
+  createdAt DateTime @default(now())
+
+  @@unique([ticker, email])
+}

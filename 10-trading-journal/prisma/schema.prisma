@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Trade {
+  id              String   @id @default(cuid())
+
+  // What
+  ticker          String   // ASX (e.g. CBA) or intl (e.g. AAPL)
+  exchange        String   @default("ASX")  // ASX | NYSE | NASDAQ
+  direction       String   // "long" | "short"
+  quantity        Int
+  entryPrice      Float    // AUD
+  exitPrice       Float?   // AUD — null if still open
+  currency        String   @default("AUD")
+
+  // When
+  entryDate       DateTime
+  exitDate        DateTime?
+  holdingDays     Int?
+
+  // P&L
+  grossPnl        Float?   // AUD
+  netPnl          Float?   // After brokerage
+  brokerage       Float    @default(9.50)  // Typical ASX brokerage
+  pnlPercent      Float?
+
+  // Context
+  marketCondition String?  // "bull" | "bear" | "sideways" | "volatile"
+  tradeThesis     String?  // Your reason for entering
+  setupType       String?  // "breakout" | "value" | "momentum" | "dividend" | "earnings" | "swing"
+  asxSector       String?
+  rbaRateContext  String?  // Cash rate at time of trade
+
+  // Psychology
+  psychologyNotes String?  // How did you feel? FOMO? Disciplined?
+  ruleFollowed    Boolean?
+  mistakes        String?
+
+  // AI analysis
+  aiAnalysis      Json?    // Full AI feedback object
+  aiGeneratedAt   DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([ticker])
+  @@index([entryDate])
+  @@index([exchange])
+}
