@@ -19,6 +19,21 @@
 
 ## Quick Start
 
+### Windows (PowerShell)
+```powershell
+# Option A — double-click these files in Explorer:
+#   setup.bat       (installs everything)
+#   start-all.bat   (launches all 10 apps)
+
+# Option B — run directly in PowerShell:
+.\setup.ps1
+.\start-all.ps1
+
+# If PowerShell blocks scripts, run this once first:
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+### macOS / Linux (bash)
 ```bash
 # 1. Copy and fill in your API keys
 cp .env.example .env
